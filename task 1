@@ -1,0 +1,26 @@
+import pulp
+
+# Create the LP problem
+model = pulp.LpProblem("Maximize_Production", pulp.LpMaximize)
+
+# Decision Variables
+L = pulp.LpVariable('Lemonade', lowBound=0, cat='Integer')  # Number of Lemonade units
+F = pulp.LpVariable('Fruit_Juice', lowBound=0, cat='Integer')  # Number of Fruit Juice units
+
+# Objective Function
+model += L + F, "Total Production"
+
+# Constraints
+model += 2 * L + 1 * F <= 100  # Water constraint
+model += 1 * L <= 50           # Sugar constraint
+model += 1 * L <= 30           # Lemon Juice constraint
+model += 2 * F <= 40           # Fruit Puree constraint
+
+# Solve the problem
+model.solve()
+
+# Output the results
+print(f"Status: {pulp.LpStatus[model.status]}")
+print(f"Number of Lemonade units produced: {L.varValue}")
+print(f"Number of Fruit Juice units produced: {F.varValue}")
+print(f"Maximum total production: {L.varValue + F.varValue}")
